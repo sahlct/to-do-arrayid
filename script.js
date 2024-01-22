@@ -101,11 +101,9 @@ function read(id) {
     if (readercard.classList.contains(classcheck)) {
         readercard.classList.remove("mainread")
         filterid[0].markas = false
-        // document.getElementById('title-div').style.textDecoration = "none"
     } else {
         readercard.classList.add("mainread");
         filterid[0].markas = true
-        // document.getElementById('title-div').style.textDecoration = "line-through"
     }
 }
 
