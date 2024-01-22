@@ -12,6 +12,7 @@ let enterDate;
 let i, index;
 
 
+
 function checkOption() {
     selectvalue = document.getElementById("select_box").value
     console.log(selectvalue);
@@ -45,6 +46,7 @@ document.getElementById("myform").addEventListener("submit", function (event) {
     console.log(entris);
     console.log(`id${count}`);
     rearrangeDivs()
+    $("#exampleModal").modal("hide");
 });
 
 
