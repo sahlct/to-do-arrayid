@@ -9,7 +9,7 @@ let mainid;
 let selectedIndex, cards;
 let selectvalue;
 let enterDate;
-let i,index;
+let i, index;
 
 
 function checkOption() {
@@ -34,9 +34,10 @@ document.getElementById("myform").addEventListener("submit", function (event) {
     count++
 
     entry = {
+        markas : false,
         id: `id${count}`,
-        title: title, 
-        message: message, 
+        title: title,
+        message: message,
         date: date
     };
     entris.push(entry);
@@ -44,47 +45,21 @@ document.getElementById("myform").addEventListener("submit", function (event) {
     console.log(entris);
     console.log(`id${count}`);
     rearrangeDivs()
-    const container = document.getElementById("container-fluid");
-    // container.innerHTML = '';
-
-    const newDiv = document.createElement("div");
-            newDiv.id = `id${count}`;
-            console.log(newDiv.id);
-            newDiv.className = 'card_div'
-
-            newDiv.innerHTML = `
-            <div id="title-div">
-                <h3>${title}</h3>
-                <h6>${message}</h6>
-                <h6>${date}</h6>
-            </div>
-            <div style="flex-grow: 1;"></div>
-            <div id="button-div">
-                <button type="button" id="delete" class="btn btn-success" onclick="datadelete('id${count}')">Delete</button>
-                <button type="button" id="edit" class="btn btn-primary" data-bs-toggle="modal"
-                    data-bs-target="#editmodal" onclick="editindex('id${count}')">Edit</button>
-                <button type="button" id="mark" class="btn btn-danger" onclick="read('id${count}')">Mark as complete</button>
-            </div>
-        `;
-        container.style.flexDirection = "column";
-        container.style.alignItems = "center";
-        container.style.justifyContent = "flex-start";
-        container.appendChild(newDiv);
 });
 
 
 function editindex(id) {
     index = id
-    for(i=0; i<entris.length; i++){
+    for (i = 0; i < entris.length; i++) {
         if (id == entris[i].id) {
             document.getElementById("title-second").value = entris[i].title;
             document.getElementById("message-second").value = entris[i].message;
             document.getElementById("date-second").value = entris[i].date;
             break;
         }
-        }
     }
-   
+}
+
 
 document.getElementById("myform-second").addEventListener("submit", function (evnt) {
     evnt.preventDefault();
@@ -97,7 +72,7 @@ document.getElementById("myform-second").addEventListener("submit", function (ev
     // cards = document.getElementsByClassName('card_div');
     // console.log(cards);
 
-    document.getElementById(index).innerHTML = `
+    document.getElementById(`${index}`).innerHTML = `
         <div id="title-div">
             <h3>${entris[i].title}</h3>
             <h6>${entris[i].message}</h6>
@@ -117,16 +92,24 @@ document.getElementById("myform-second").addEventListener("submit", function (ev
 function read(id) {
     let readercard = document.getElementById(`${id}`);
     let classcheck = "mainread"
+    let filterid = entris.filter(function (fi_id){
+        return fi_id.id == id
+    })
+    
     if (readercard.classList.contains(classcheck)) {
         readercard.classList.remove("mainread")
+        filterid[0].markas = false
+        // document.getElementById('title-div').style.textDecoration = "none"
     } else {
         readercard.classList.add("mainread");
+        filterid[0].markas = true
+        // document.getElementById('title-div').style.textDecoration = "line-through"
     }
 }
 
 function datadelete(id) {
     let selectDiv = document.getElementById(`${id}`)
-    entris = entris.filter(function (value){
+    entris = entris.filter(function (value) {
         return value.id !== id
     })
     selectDiv.remove();
@@ -140,12 +123,16 @@ function rearrangeDivs() {
     const container = document.getElementById("container-fluid");
     container.innerHTML = '';
     if (enterDate == '') {
-        for(let k=0; k<=entris.length; k++){
+        for (let k = 0; k < entris.length; k++) {
             const newDiv = document.createElement("div");
-                newDiv.id = "creatediv";
-                newDiv.className = 'card_div'
-    
-                newDiv.innerHTML = `
+            let nextid = entris[k].id
+            newDiv.id = nextid;
+            newDiv.className = 'card_div'
+            if (entris[k].markas == true) {
+                newDiv.classList.add("mainread")
+            }
+
+            newDiv.innerHTML = `
                 <div id="title-div">
                     <h3>${entris[k].title}</h3>
                     <h6>${entris[k].message}</h6>
@@ -153,24 +140,31 @@ function rearrangeDivs() {
                 </div>
                 <div style="flex-grow: 1;"></div>
                 <div id="button-div">
-                    <button type="button" id="delete" class="btn btn-success" onclick="datadelete('${index}')">Delete</button>
+                    <button type="button" id="delete" class="btn btn-success" onclick="datadelete('${nextid}')">Delete</button>
                     <button type="button" id="edit" class="btn btn-primary" data-bs-toggle="modal"
-                    data-bs-target="#editmodal" onclick="editindex('${index}')">Edit</button>
-                    <button type="button" id="mark" class="btn btn-danger" onclick="read('${index}')">Mark as complete</button>
+                    data-bs-target="#editmodal" onclick="editindex('${nextid}')">Edit</button>
+                    <button type="button" id="mark" class="btn btn-danger" onclick="read('${nextid}')">Mark as complete</button>
                 </div>
             `;
-                container.appendChild(newDiv);
+            container.appendChild(newDiv);
+            container.style.flexDirection = "column";
+            container.style.alignItems = "center";
+            container.style.justifyContent = "flex-start";
         }
     } else {
-        let secdate = entris.filter(function (result){
-        return result.date == enterDate   
-    })
-    for(let j=0; j<=secdate.length; j++){
-        const newDiv = document.createElement("div");
-                newDiv.id = "creatediv";
-                newDiv.className = 'card_div'
-    
-                newDiv.innerHTML = `
+        let secdate = entris.filter(function (result) {
+            return result.date == enterDate
+        })
+        for (let j = 0; j < secdate.length; j++) {
+            const newDiv = document.createElement("div");
+            let nextid1 = secdate[j].id
+            newDiv.id = nextid1
+            newDiv.className = 'card_div'
+            if (secdate[j].markas == true) {
+                newDiv.classList.add("mainread")
+            }
+
+            newDiv.innerHTML = `
                 <div id="title-div">
                     <h3>${secdate[j].title}</h3>
                     <h6>${secdate[j].message}</h6>
@@ -178,28 +172,16 @@ function rearrangeDivs() {
                 </div>
                 <div style="flex-grow: 1;"></div>
                 <div id="button-div">
-                    <button type="button" id="delete" class="btn btn-success" onclick="datadelete('${index}')">Delete</button>
+                    <button type="button" id="delete" class="btn btn-success" onclick="datadelete('${nextid1}')">Delete</button>
                     <button type="button" id="edit" class="btn btn-primary" data-bs-toggle="modal"
-                    data-bs-target="#editmodal" onclick="editindex('${index}')">Edit</button>
-                    <button type="button" id="mark" class="btn btn-danger" onclick="read('${index}')">Mark as complete</button>
+                    data-bs-target="#editmodal" onclick="editindex('${nextid1}')">Edit</button>
+                    <button type="button" id="mark" class="btn btn-danger" onclick="read('${nextid1}')">Mark as complete</button>
                 </div>
             `;
-                container.appendChild(newDiv);
+            container.appendChild(newDiv);
+            container.style.flexDirection = "column";
+            container.style.alignItems = "center";
+            container.style.justifyContent = "flex-start";
+        }
     }
-    }
-    
-    
-    // while () {
-    //     
-
-    //       
-    //     }
-
-    //     count++
-    // }
-
-    // // Set container styles outside the loop
-    // container.style.flexDirection = "column";
-    // container.style.alignItems = "center";
-    // container.style.justifyContent = "flex-start";
 }
